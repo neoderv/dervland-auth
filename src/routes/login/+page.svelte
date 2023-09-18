@@ -15,7 +15,7 @@
 
         let nextUrl = next || "/";
 
-        if (form.success == "next")
+        if (form && form.success == "next")
             window.location.href = nextUrl + `?data=${form.data}`;
     });
 </script>

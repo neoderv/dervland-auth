@@ -1,6 +1,8 @@
 import { initDb } from '$lib/db.js';
 import { compare } from 'bcrypt'
 import { randomBytes } from 'node:crypto';
+import { redirect } from '@sveltejs/kit';
+import { getToken } from "$lib/token";
 
 let db;
 
@@ -20,7 +22,7 @@ export const actions = {
         if (!pass) return { 'success': false, 'message': 'No password provided' };
         if (!user) return { 'success': false, 'message': 'No username provided' };
 
-        let isExist = await db.all('SELECT username, password FROM auth WHERE UPPER(username) LIKE UPPER(?)', [
+        let isExist = await db.all('SELECT * FROM auth WHERE UPPER(username) LIKE UPPER(?)', [
             user
         ]);
 
@@ -38,6 +40,8 @@ export const actions = {
             token,
             'main'
         ])
+
+        if (isExist[0].valid === 'noverify') throw redirect(302, `/captcha/${token}`);
 
         return { 'success': 'next', 'data': token };
     }

@@ -3,6 +3,7 @@ const maxChar = 32;
 
 import { initDb } from '$lib/db.js';
 import { hash } from 'bcrypt'
+import { redirect } from '@sveltejs/kit';
 
 function isValid(user) {
     return user.search(/[^A-Za-z0-9\-\_]/g) == -1;
@@ -38,13 +39,13 @@ export const actions = {
 
         var passHash = await hash(pass, 10);
 
-        await db.run('INSERT INTO auth (username, password, ip) VALUES (?, ?, ?)', [
+        await db.run('INSERT INTO auth (username, password, ip, valid) VALUES (?, ?, ?, ?)', [
             user,
             passHash,
-            getClientAddress()
+            getClientAddress(),
+            'noverify'
         ]);
 
-        return { 'success': false, 'message': 'Account created!' };
-
+        throw redirect(302, '/login');
     }
 };

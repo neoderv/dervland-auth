@@ -1,12 +1,8 @@
-import { initDb } from '$lib/db.js';
-let db;
+import { getToken } from "$lib/token";
 
 /** @type {import('./$types').RequestHandler} */
 export async function GET({ params }) {
-    db = await initDb();
-    let match = await db.all('SELECT * FROM token WHERE token = ?',[
-        params.token || 'blah'
-    ]);
+    let {token} = params;
 
-    return new Response(JSON.stringify({username: match[0] ? match[0].username : '!nobody'}));
+    return new Response(JSON.stringify(await getToken(token)));
 };
