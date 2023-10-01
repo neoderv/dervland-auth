@@ -9,7 +9,7 @@ let db;
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-    default: async ({ request, params }) => {
+    default: async ({ request, params, url }) => {
         db = await initDb();
 
         const data = await request.formData();
@@ -26,13 +26,13 @@ export const actions = {
 
         let { userToken } = params;
 
-        if (!succ || !succ.success) throw redirect(302, `/captcha/${userToken}`);
+        if (!succ || !succ.success) throw redirect(302, `/captcha/${userToken}`+url.search);
 
         await db.run('UPDATE auth SET valid = ? WHERE username = ?', [
             'verified',
             (await getToken(userToken)).username
         ])
 
-        throw redirect(302, '/');
+        throw redirect(302, url.searchParams.get('next'));
     }
 }

@@ -1,10 +1,10 @@
 <script>
     import Form from "$lib/Form.svelte";
-    import { page } from "$app/stores";
     import { onMount } from "svelte";
 
     let next = false;
     let loc = "/";
+    let search = "";
 
     /** @type {import('./$types').ActionData} */
     export let form;
@@ -12,6 +12,7 @@
     onMount(() => {
         loc = document.location;
         next = new URL(loc).searchParams.get("next");
+        search = new URL(loc).search;
 
         let nextUrl = next || "/";
 
@@ -21,7 +22,7 @@
 </script>
 
 <p>
-    No account? <a href="/register">Register </a> an account to use the service.
+    No account? <a href="/register{search}">Register </a> an account to use the service.
 </p>
 <h1>Notice</h1>
 <p>

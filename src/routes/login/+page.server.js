@@ -2,14 +2,13 @@ import { initDb } from '$lib/db.js';
 import { compare } from 'bcrypt'
 import { randomBytes } from 'node:crypto';
 import { redirect } from '@sveltejs/kit';
-import { getToken } from "$lib/token";
 
 let db;
 
 /** @type {import('./$types').Actions} */
 export const actions = {
     /* todo: not copy this code from the other file */
-    default: async ({request}) => {
+    default: async ({request, url}) => {
         db = await initDb();
 
         const data = await request.formData();
@@ -41,7 +40,7 @@ export const actions = {
             'main'
         ])
 
-        if (isExist[0].valid === 'noverify') throw redirect(302, `/captcha/${token}`);
+        if (isExist[0].valid === 'noverify') throw redirect(302, `/captcha/${token}`+url.search);
 
         return { 'success': 'next', 'data': token };
     }

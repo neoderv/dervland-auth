@@ -11,6 +11,13 @@ async function initDb() {
       driver: sqlite3.Database
     });
 
+    await db.run(`
+      CREATE TABLE IF NOT EXISTS auth (username TEXT, password TEXT, ip TEXT, valid TEXT);
+    `);
+    await db.run(`
+      CREATE TABLE IF NOT EXISTS token (username TEXT, token TEXT, scope TEXT);
+    `);
+
     return db;
 }
 

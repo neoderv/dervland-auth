@@ -11,7 +11,7 @@ function isValid(user) {
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-    default: async ({ request, getClientAddress }) => {
+    default: async ({ request, getClientAddress, url }) => {
         const db = await initDb();
 
         const data = await request.formData();
@@ -46,6 +46,6 @@ export const actions = {
             'noverify'
         ]);
 
-        throw redirect(302, '/login');
+        throw redirect(302, '/login'+url.search);
     }
 };
